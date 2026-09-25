@@ -2,83 +2,1933 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DAMSENTINEL — Asia + Egypt Dam Risk Intelligence</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>DAMSENTINEL V5 — Dam Risk & Flood Decision Support</title>
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial;background:#07111d;color:#eaf2f8}
-header{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:#0b1725;border-bottom:1px solid #203246}
-.brand{font-weight:800;letter-spacing:1.5px;font-size:21px}.sub{font-size:11px;color:#8fa7bb;margin-top:3px}
-.badge{padding:8px 12px;border:1px solid #2c4962;border-radius:999px;color:#a9c9df;font-size:12px}
-main{display:grid;grid-template-columns:390px 1fr;height:calc(100vh - 72px)}
-aside{padding:20px;border-right:1px solid #203246;background:#091522;overflow:auto}
-h2{font-size:17px;margin:0 0 14px}.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
-.stat{background:#0e1d2c;border:1px solid #203246;border-radius:12px;padding:12px}.stat b{font-size:21px}.stat span{display:block;color:#8fa7bb;font-size:11px;margin-top:3px}
-input,select{width:100%;background:#0d1b29;border:1px solid #29445b;color:#eaf2f8;border-radius:9px;padding:11px;margin-bottom:9px}
-.list{display:grid;gap:7px}.item{padding:11px;border:1px solid #203246;border-radius:10px;background:#0c1a28;cursor:pointer}.item:hover{border-color:#5b8fb2}.item strong{font-size:13px}.item small{display:block;color:#91a8bb;margin-top:3px}
-#map{height:100%;min-height:500px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#0d1b29;color:#eaf2f8}.leaflet-popup-content{margin:13px}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.62);display:none;align-items:center;justify-content:center;padding:20px;z-index:1000}.modal.open{display:flex}
-.panel{width:min(900px,96vw);max-height:90vh;overflow:auto;background:#0b1826;border:1px solid #2a455c;border-radius:16px;padding:22px;box-shadow:0 20px 60px #000}
-.panelhead{display:flex;justify-content:space-between;gap:15px}.close{cursor:pointer;font-size:24px;color:#9db2c3}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}.card{background:#0e1d2c;border:1px solid #203246;border-radius:11px;padding:13px}.card label{font-size:10px;color:#8fa7bb;text-transform:uppercase}.card div{margin-top:5px;font-weight:700}
-.section{border-top:1px solid #203246;padding-top:16px;margin-top:16px}.note{font-size:12px;line-height:1.6;color:#9db1c0}
-@media(max-width:800px){main{grid-template-columns:1fr;height:auto}aside{border-right:0;border-bottom:1px solid #203246}#map{height:55vh}.grid{grid-template-columns:1fr 1fr}}
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:#06101b;
+  color:#eaf2f8;
+}
+
+header{
+  min-height:76px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:14px 28px;
+  background:#091827;
+  border-bottom:1px solid #1e3448;
+}
+
+.brand{
+  font-size:23px;
+  font-weight:900;
+  letter-spacing:2px;
+}
+
+.sub{
+  color:#91a8ba;
+  font-size:12px;
+  margin-top:4px;
+}
+
+.badge{
+  border:1px solid #31516b;
+  border-radius:999px;
+  padding:8px 13px;
+  font-size:11px;
+  color:#a9cbe1;
+  white-space:nowrap;
+}
+
+main{
+  display:grid;
+  grid-template-columns:410px 1fr;
+  height:calc(100vh - 76px);
+}
+
+aside{
+  overflow:auto;
+  padding:20px;
+  background:#081522;
+  border-right:1px solid #1e3448;
+}
+
+h2{
+  margin:0 0 13px;
+  font-size:17px;
+}
+
+h3{
+  margin:0 0 10px;
+  font-size:14px;
+}
+
+.statgrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-bottom:16px;
+}
+
+.stat{
+  background:#0c1c2b;
+  border:1px solid #203a50;
+  border-radius:12px;
+  padding:13px;
+}
+
+.stat b{
+  display:block;
+  font-size:23px;
+}
+
+.stat span{
+  display:block;
+  color:#8fa7b9;
+  font-size:11px;
+  margin-top:4px;
+}
+
+.dashboard{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-bottom:17px;
+}
+
+.mini{
+  background:#0c1c2b;
+  border:1px solid #203a50;
+  border-radius:10px;
+  padding:10px;
+  text-align:center;
+}
+
+.mini b{
+  font-size:17px;
+}
+
+.mini span{
+  display:block;
+  color:#8fa7b9;
+  font-size:9px;
+  margin-top:3px;
+}
+
+input,
+select{
+  width:100%;
+  background:#0b1a29;
+  border:1px solid #29465e;
+  color:#eaf2f8;
+  border-radius:9px;
+  padding:11px;
+  margin-bottom:9px;
+  outline:none;
+}
+
+input:focus,
+select:focus{
+  border-color:#69a8d0;
+}
+
+.list{
+  display:grid;
+  gap:7px;
+}
+
+.item{
+  padding:11px;
+  border:1px solid #1f394e;
+  border-radius:10px;
+  background:#0b1a28;
+  cursor:pointer;
+  transition:.15s;
+}
+
+.item:hover{
+  border-color:#62a4ce;
+  transform:translateY(-1px);
+}
+
+.item strong{
+  font-size:13px;
+}
+
+.item small{
+  display:block;
+  color:#91a8ba;
+  margin-top:4px;
+}
+
+#map{
+  height:100%;
+  min-height:500px;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip{
+  background:#0c1b2a;
+  color:#eaf2f8;
+}
+
+.leaflet-popup-content{
+  margin:13px;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.72);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:2000;
+}
+
+.modal.open{
+  display:flex;
+}
+
+.panel{
+  width:min(1050px,96vw);
+  max-height:92vh;
+  overflow:auto;
+  background:#091827;
+  border:1px solid #2b475d;
+  border-radius:18px;
+  padding:24px;
+  box-shadow:0 25px 80px rgba(0,0,0,.65);
+}
+
+.panelhead{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.close{
+  cursor:pointer;
+  font-size:28px;
+  color:#9eb2c1;
+}
+
+.close:hover{
+  color:white;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin:17px 0;
+}
+
+.card{
+  background:#0c1d2d;
+  border:1px solid #203a50;
+  border-radius:11px;
+  padding:13px;
+}
+
+.card label{
+  display:block;
+  color:#8fa7b9;
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.6px;
+}
+
+.card div{
+  margin-top:6px;
+  font-weight:750;
+}
+
+.section{
+  border-top:1px solid #203a50;
+  padding-top:18px;
+  margin-top:18px;
+}
+
+.riskgrid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+.risk{
+  background:#0b1b2a;
+  border:1px solid #263f54;
+  border-radius:12px;
+  padding:14px;
+}
+
+.risk-title{
+  font-size:11px;
+  color:#9ab0c0;
+  text-transform:uppercase;
+}
+
+.risk-score{
+  font-size:24px;
+  font-weight:900;
+  margin-top:7px;
+}
+
+.risk-level{
+  display:inline-block;
+  margin-top:8px;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:10px;
+  border:1px solid #38546a;
+}
+
+.level-low{
+  color:#9fd3b2;
+  background:#10291f;
+}
+
+.level-medium{
+  color:#e6c88b;
+  background:#2b2515;
+}
+
+.level-high{
+  color:#f0a5a5;
+  background:#301719;
+}
+
+.level-insufficient{
+  color:#aebbc5;
+  background:#1a252e;
+}
+
+.overall{
+  margin-top:13px;
+  padding:16px;
+  border-radius:13px;
+  background:#0d2030;
+  border:1px solid #31516a;
+}
+
+.overall strong{
+  font-size:18px;
+}
+
+.scenario{
+  background:#0b1b2a;
+  border:1px solid #213b50;
+  border-radius:13px;
+  padding:15px;
+  margin-bottom:12px;
+}
+
+.scenario-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  align-items:center;
+}
+
+.scenario input[type="range"]{
+  width:100%;
+}
+
+.scenario-value{
+  font-size:18px;
+  font-weight:800;
+}
+
+.resultbox{
+  margin-top:12px;
+  padding:13px;
+  border-radius:10px;
+  background:#0e2334;
+  border:1px solid #294a62;
+  line-height:1.6;
+}
+
+.note{
+  color:#9eb1c0;
+  font-size:11px;
+  line-height:1.65;
+}
+
+.source{
+  color:#b8cfdf;
+  font-size:12px;
+  line-height:1.6;
+}
+
+.source a{
+  color:#83c6ef;
+}
+
+.legend{
+  background:#091827;
+  color:#eaf2f8;
+  padding:10px 12px;
+  border:1px solid #29465e;
+  border-radius:10px;
+  line-height:1.7;
+}
+
+.dot{
+  display:inline-block;
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  margin-right:5px;
+}
+
+button{
+  background:#123149;
+  border:1px solid #35607b;
+  color:#eaf2f8;
+  border-radius:8px;
+  padding:8px 12px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#194563;
+}
+
+@media(max-width:900px){
+
+  header{
+    padding:12px 16px;
+  }
+
+  .badge{
+    display:none;
+  }
+
+  main{
+    grid-template-columns:1fr;
+    height:auto;
+  }
+
+  aside{
+    border-right:0;
+    border-bottom:1px solid #20384d;
+  }
+
+  #map{
+    height:60vh;
+  }
+
+  .grid,
+  .riskgrid{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media(max-width:600px){
+
+  .grid,
+  .riskgrid,
+  .dashboard{
+    grid-template-columns:1fr;
+  }
+
+  .scenario-row{
+    grid-template-columns:1fr;
+  }
+
+  .panel{
+    padding:16px;
+  }
+}
 </style>
 </head>
+
 <body>
-<header><div><div class="brand">DAMSENTINEL</div><div class="sub">Asia + Egypt Dam Risk & Flood Emergency Decision-Support Platform</div></div><div class="badge">V5 • REAL-DATA CURATED DEMO</div></header>
+
+<header>
+
+  <div>
+    <div class="brand">DAMSENTINEL</div>
+    <div class="sub">
+      Global Dam Risk & Flood Emergency Decision-Support Platform
+    </div>
+  </div>
+
+  <div class="badge">
+    V5.1 • REAL-DATA SCREENING PROTOTYPE
+  </div>
+
+</header>
+
 <main>
+
 <aside>
-<h2>Dam Intelligence</h2>
-<div class="statgrid"><div class="stat"><b id="count">30</b><span>Tracked facilities</span></div><div class="stat"><b id="countries">9</b><span>Countries</span></div></div>
-<input id="search" placeholder="Search dam, river or country…">
-<select id="country"><option value="">All countries</option></select>
-<div class="list" id="list"></div>
+
+  <h2>Dam Intelligence</h2>
+
+  <div class="statgrid">
+
+    <div class="stat">
+      <b id="count">—</b>
+      <span>Tracked facilities</span>
+    </div>
+
+    <div class="stat">
+      <b id="countries">—</b>
+      <span>Countries</span>
+    </div>
+
+  </div>
+
+  <div class="dashboard">
+
+    <div class="mini">
+      <b id="existingCount">—</b>
+      <span>Existing</span>
+    </div>
+
+    <div class="mini">
+      <b id="highConfidence">—</b>
+      <span>High confidence</span>
+    </div>
+
+    <div class="mini">
+      <b id="hydropowerTotal">—</b>
+      <span>GW hydropower</span>
+    </div>
+
+  </div>
+
+  <input
+    id="search"
+    placeholder="Search dam, river or country…"
+  >
+
+  <select id="country">
+    <option value="">All countries</option>
+  </select>
+
+  <div
+    id="list"
+    class="list"
+  ></div>
+
 </aside>
+
 <div id="map"></div>
+
 </main>
-<div class="modal" id="modal"><div class="panel">
-<div class="panelhead"><div><h2 id="title"></h2><div id="location" class="sub"></div></div><div class="close" onclick="closeModal()">×</div></div>
-<div class="grid" id="facts"></div>
-<div class="section"><h2>Risk Screening</h2><div class="grid">
-<div class="card"><label>Hydrological</label><div>Screening only</div></div>
-<div class="card"><label>Downstream exposure</label><div>Not calculated</div></div>
-<div class="card"><label>Seismic</label><div>Not calculated</div></div>
-<div class="card"><label>Data confidence</label><div id="confidence"></div></div>
-</div></div>
-<div class="section"><h2>Scenario Lab</h2><p class="note">Explore hypothetical extreme-rainfall, emergency-release and dam-failure scenarios in future versions. These are not forecasts or official emergency warnings.</p></div>
-<div class="section"><h2>Data provenance</h2><p class="note" id="source"></p></div>
-</div></div>
+
+
+<!-- MODAL -->
+
+<div
+  class="modal"
+  id="modal"
+>
+
+<div class="panel">
+
+  <div class="panelhead">
+
+    <div>
+
+      <h2 id="title"></h2>
+
+      <div
+        id="location"
+        class="sub"
+      ></div>
+
+    </div>
+
+    <div
+      class="close"
+      onclick="closeModal()"
+    >
+      ×
+    </div>
+
+  </div>
+
+
+  <!-- BASIC INFORMATION -->
+
+  <div class="grid" id="facts"></div>
+
+
+  <!-- RISK SCREENING -->
+
+  <div class="section">
+
+    <h2>Risk Screening</h2>
+
+    <p class="note">
+      Screening indicators are derived from available prototype
+      attributes and should not be interpreted as validated
+      probabilities of dam failure.
+    </p>
+
+    <div
+      class="riskgrid"
+      id="riskGrid"
+    ></div>
+
+    <div
+      class="overall"
+      id="overallRisk"
+    ></div>
+
+  </div>
+
+
+  <!-- SCENARIO LAB -->
+
+  <div class="section">
+
+    <h2>Scenario Lab</h2>
+
+    <p class="note">
+      Explore hypothetical changes in rainfall and emergency
+      release conditions. These scenarios are analytical
+      screening exercises, not forecasts or official warnings.
+    </p>
+
+
+    <div class="scenario">
+
+      <h3>Scenario A — Extreme Rainfall</h3>
+
+      <div class="scenario-row">
+
+        <div>
+
+          <input
+            type="range"
+            id="rainfall"
+            min="0"
+            max="100"
+            value="25"
+            step="5"
+          >
+
+        </div>
+
+        <div>
+
+          Increase:
+          <span
+            class="scenario-value"
+            id="rainfallValue"
+          >
+            25%
+          </span>
+
+        </div>
+
+      </div>
+
+      <div
+        class="resultbox"
+        id="rainfallResult"
+      ></div>
+
+    </div>
+
+
+    <div class="scenario">
+
+      <h3>Scenario B — Emergency Release</h3>
+
+      <div class="scenario-row">
+
+        <div>
+
+          <input
+            type="range"
+            id="release"
+            min="0"
+            max="100"
+            value="25"
+            step="5"
+          >
+
+        </div>
+
+        <div>
+
+          Release increase:
+          <span
+            class="scenario-value"
+            id="releaseValue"
+          >
+            25%
+          </span>
+
+        </div>
+
+      </div>
+
+      <div
+        class="resultbox"
+        id="releaseResult"
+      ></div>
+
+    </div>
+
+
+    <div class="scenario">
+
+      <h3>Scenario C — Hypothetical Failure</h3>
+
+      <div
+        class="resultbox"
+        id="failureResult"
+      ></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- DATA PROVENANCE -->
+
+  <div class="section">
+
+    <h2>Data Provenance</h2>
+
+    <p
+      class="source"
+      id="source"
+    ></p>
+
+  </div>
+
+
+  <!-- DISCLAIMER -->
+
+  <div class="section">
+
+    <p class="note">
+
+      <strong>DAMSENTINEL V5.1</strong> is a decision-support
+      and screening prototype. It is not an official dam-warning
+      system and does not provide validated dam-failure probabilities.
+      Emergency decisions require validated hydraulic/hydrologic
+      models, current monitoring data, and responsible authorities.
+
+    </p>
+
+  </div>
+
+</div>
+
+</div>
+
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
-let dams=[],map,markers=[];
+
+let dams = [];
+let map;
+let markers = [];
+let selectedDam = null;
+
+
+/* =========================
+   INITIALIZATION
+========================= */
+
 async function init(){
- dams=await fetch('data/dams.json').then(r=>r.json());
- map=L.map('map').setView([27,92],4);
- L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);
- const countries=[...new Set(dams.map(d=>d.country))].sort(); country.innerHTML='<option value="">All countries</option>'+countries.map(c=>`<option>${c}</option>`).join('');
- render();
+
+  try{
+
+    const response =
+      await fetch("data/dams.json");
+
+    if(!response.ok){
+
+      throw new Error(
+        "Could not load data/dams.json"
+      );
+
+    }
+
+    dams = await response.json();
+
+    if(!Array.isArray(dams)){
+
+      throw new Error(
+        "dams.json is not an array"
+      );
+
+    }
+
+
+    map = L.map("map")
+      .setView([27,92],4);
+
+
+    L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        attribution:
+        "© OpenStreetMap contributors"
+      }
+    ).addTo(map);
+
+
+    createCountryFilter();
+
+    updateDashboard();
+
+    render();
+
+
+    /* MAP LEGEND */
+
+    const legend =
+      L.control({position:"bottomright"});
+
+    legend.onAdd = function(){
+
+      const div =
+        L.DomUtil.create(
+          "div",
+          "legend"
+        );
+
+      div.innerHTML = `
+        <strong>Screening map</strong><br>
+        <span class="dot" style="background:#6aa6c8"></span>
+        Dam facility<br>
+        <span class="dot" style="background:#9aa8b3"></span>
+        Screening only
+      `;
+
+      return div;
+    };
+
+    legend.addTo(map);
+
+
+  }catch(error){
+
+    console.error(error);
+
+    document.getElementById("list").innerHTML =
+      `<div class="item">
+        <strong>Data loading error</strong>
+        <small>${error.message}</small>
+      </div>`;
+
+  }
+
 }
+
+
+/* =========================
+   DASHBOARD
+========================= */
+
+function updateDashboard(){
+
+  const existing =
+    dams.filter(
+      d => String(d.status).toLowerCase()
+      === "existing"
+    ).length;
+
+
+  const highConfidence =
+    dams.filter(
+      d => String(d.data_confidence).toLowerCase()
+      === "high"
+    ).length;
+
+
+  const hydroMW =
+    dams.reduce(
+      (sum,d) =>
+        sum +
+        (Number(d.hydropower_capacity_mw) || 0),
+      0
+    );
+
+
+  const countries =
+    new Set(
+      dams.map(d => d.country)
+    ).size;
+
+
+  document.getElementById("count")
+    .textContent = dams.length;
+
+  document.getElementById("countries")
+    .textContent = countries;
+
+  document.getElementById("existingCount")
+    .textContent = existing;
+
+  document.getElementById("highConfidence")
+    .textContent = highConfidence;
+
+  document.getElementById("hydropowerTotal")
+    .textContent =
+      (hydroMW / 1000).toFixed(1);
+
+}
+
+
+/* =========================
+   COUNTRY FILTER
+========================= */
+
+function createCountryFilter(){
+
+  const countries =
+    [...new Set(
+      dams
+        .map(d => d.country)
+        .filter(Boolean)
+    )].sort();
+
+
+  const select =
+    document.getElementById("country");
+
+
+  select.innerHTML =
+    `<option value="">
+      All countries
+    </option>`;
+
+
+  countries.forEach(countryName => {
+
+    const option =
+      document.createElement("option");
+
+    option.value = countryName;
+
+    option.textContent = countryName;
+
+    select.appendChild(option);
+
+  });
+
+}
+
+
+/* =========================
+   RENDER LIST + MAP
+========================= */
+
 function render(){
- markers.forEach(m=>map.removeLayer(m));markers=[];
- const q=search.value.toLowerCase(), c=country.value;
- const rows=dams.filter(d=>(!q||[d.dam_name,d.country,d.river].join(' ').toLowerCase().includes(q))&&(!c||d.country===c));
- list.innerHTML=rows.map(d=>`<div class="item" onclick="openDam('${d.id}')"><strong>${d.dam_name}</strong><small>${d.country} • ${d.river}</small></div>`).join('');
- rows.forEach(d=>{
-  const m=L.circleMarker([d.latitude,d.longitude],{radius:7,weight:2,fillOpacity:.8}).addTo(map);
-  m.bindTooltip(d.dam_name);m.on('click',()=>openDam(d.id));markers.push(m);
- });
+
+  markers.forEach(
+    marker => map.removeLayer(marker)
+  );
+
+  markers = [];
+
+
+  const query =
+    document.getElementById("search")
+      .value
+      .toLowerCase()
+      .trim();
+
+
+  const selectedCountry =
+    document.getElementById("country")
+      .value;
+
+
+  const rows =
+    dams.filter(d => {
+
+      const text = [
+
+        d.dam_name,
+        d.country,
+        d.river,
+        d.dam_type
+
+      ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+
+      const matchSearch =
+        !query ||
+        text.includes(query);
+
+
+      const matchCountry =
+        !selectedCountry ||
+        d.country === selectedCountry;
+
+
+      return (
+        matchSearch &&
+        matchCountry
+      );
+
+    });
+
+
+  const list =
+    document.getElementById("list");
+
+
+  if(rows.length === 0){
+
+    list.innerHTML =
+      `<div class="item">
+        <strong>No facilities found</strong>
+        <small>Try another search.</small>
+      </div>`;
+
+    return;
+
+  }
+
+
+  list.innerHTML =
+    rows.map(d => {
+
+      const level =
+        calculateOverall(d);
+
+
+      return `
+        <div
+          class="item"
+          onclick="openDam('${escapeHTML(d.id)}')"
+        >
+
+          <strong>
+            ${escapeHTML(d.dam_name)}
+          </strong>
+
+          <small>
+            ${escapeHTML(d.country)}
+            •
+            ${escapeHTML(d.river || "River unavailable")}
+            •
+            ${level}
+          </small>
+
+        </div>
+      `;
+
+    }).join("");
+
+
+  rows.forEach(d => {
+
+    if(
+      typeof d.latitude !== "number" ||
+      typeof d.longitude !== "number"
+    ) return;
+
+
+    const marker =
+      L.circleMarker(
+        [d.latitude,d.longitude],
+        {
+          radius:7,
+          weight:2,
+          color:"#7fb9d8",
+          fillColor:"#4d8bab",
+          fillOpacity:.85
+        }
+      )
+      .addTo(map);
+
+
+    marker.bindTooltip(
+      d.dam_name
+    );
+
+
+    marker.on(
+      "click",
+      () => openDam(d.id)
+    );
+
+
+    markers.push(marker);
+
+  });
+
 }
+
+
+/* =========================
+   SCREENING ENGINE
+========================= */
+
+/*
+  These are transparent screening heuristics.
+  They are NOT failure probabilities.
+*/
+
+
+function hydrologicalScore(d){
+
+  let score = 0;
+  let available = 0;
+
+
+  if(d.reservoir_capacity_bcm != null){
+
+    const capacity =
+      Number(d.reservoir_capacity_bcm);
+
+    if(Number.isFinite(capacity)){
+
+      available++;
+
+      if(capacity >= 20)
+        score += 3;
+
+      else if(capacity >= 10)
+        score += 2;
+
+      else
+        score += 1;
+
+    }
+
+  }
+
+
+  if(d.dam_age_years != null){
+
+    const age =
+      Number(d.dam_age_years);
+
+    if(Number.isFinite(age)){
+
+      available++;
+
+      if(age >= 70)
+        score += 3;
+
+      else if(age >= 40)
+        score += 2;
+
+      else
+        score += 1;
+
+    }
+
+  }
+
+
+  if(available === 0)
+    return null;
+
+
+  return Math.min(
+    100,
+    Math.round(
+      (score /
+      (available * 3)) * 100
+    )
+  );
+
+}
+
+
+function structuralScore(d){
+
+  let score = 0;
+  let available = 0;
+
+
+  if(d.dam_height_m != null){
+
+    const height =
+      Number(d.dam_height_m);
+
+    if(Number.isFinite(height)){
+
+      available++;
+
+      if(height >= 200)
+        score += 3;
+
+      else if(height >= 100)
+        score += 2;
+
+      else
+        score += 1;
+
+    }
+
+  }
+
+
+  if(d.dam_age_years != null){
+
+    const age =
+      Number(d.dam_age_years);
+
+    if(Number.isFinite(age)){
+
+      available++;
+
+      if(age >= 70)
+        score += 3;
+
+      else if(age >= 40)
+        score += 2;
+
+      else
+        score += 1;
+
+    }
+
+  }
+
+
+  if(d.dam_type){
+
+    available++;
+
+    const type =
+      String(d.dam_type)
+      .toLowerCase();
+
+
+    if(
+      type.includes("earth") ||
+      type.includes("rock")
+    ){
+
+      score += 2;
+
+    }else{
+
+      score += 1;
+
+    }
+
+  }
+
+
+  if(available === 0)
+    return null;
+
+
+  return Math.min(
+    100,
+    Math.round(
+      (score /
+      (available * 3)) * 100
+    )
+  );
+
+}
+
+
+function exposureScore(d){
+
+  /*
+    No population or settlement dataset
+    is included in the current prototype.
+    Therefore exposure cannot honestly
+    be calculated as a real population-risk value.
+  */
+
+  if(
+    d.latitude == null ||
+    d.longitude == null
+  ){
+
+    return null;
+
+  }
+
+
+  /*
+    Proxy screening based only on reservoir
+    capacity, clearly labeled as proxy.
+  */
+
+  if(d.reservoir_capacity_bcm == null)
+    return null;
+
+
+  const capacity =
+    Number(d.reservoir_capacity_bcm);
+
+
+  if(!Number.isFinite(capacity))
+    return null;
+
+
+  if(capacity >= 20)
+    return 90;
+
+  if(capacity >= 10)
+    return 70;
+
+  if(capacity >= 5)
+    return 50;
+
+  return 30;
+
+}
+
+
+function seismicScore(d){
+
+  /*
+    No seismic hazard dataset is bundled.
+    Therefore this remains unavailable.
+  */
+
+  return null;
+
+}
+
+
+function scoreLevel(score){
+
+  if(score === null)
+    return {
+      label:"Data insufficient",
+      cls:"level-insufficient"
+    };
+
+
+  if(score < 35)
+    return {
+      label:"Low",
+      cls:"level-low"
+    };
+
+
+  if(score < 70)
+    return {
+      label:"Moderate",
+      cls:"level-medium"
+    };
+
+
+  return {
+    label:"High",
+    cls:"level-high"
+  };
+
+}
+
+
+function calculateOverall(d){
+
+  const scores = [
+
+    hydrologicalScore(d),
+
+    structuralScore(d),
+
+    exposureScore(d)
+
+  ]
+  .filter(
+    score => score !== null
+  );
+
+
+  if(scores.length === 0)
+    return "Data insufficient";
+
+
+  const average =
+    scores.reduce(
+      (a,b) => a+b,
+      0
+    ) / scores.length;
+
+
+  return scoreLevel(
+    average
+  ).label;
+
+}
+
+
+/* =========================
+   OPEN DAM
+========================= */
+
 function openDam(id){
- const d=dams.find(x=>x.id===id); if(!d)return;
- title.textContent=d.dam_name;location.textContent=`${d.country} • ${d.river}`;
- const f=[['Status',d.status],['Dam type',d.dam_type],['Completed',d.year_completed??'Not available'],['Height',d.dam_height_m?d.dam_height_m+' m':'Not available'],['Length',d.dam_length_m?d.dam_length_m+' m':'Not available'],['Reservoir capacity',d.reservoir_capacity_bcm?d.reservoir_capacity_bcm+' bcm':'Not available'],['Hydropower',d.hydropower_capacity_mw?d.hydropower_capacity_mw+' MW':'Not available'],['Dam age',d.dam_age_years?d.dam_age_years+' years':'Not available']];
- facts.innerHTML=f.map(x=>`<div class="card"><label>${x[0]}</label><div>${x[1]}</div></div>`).join('');
- confidence.textContent=d.data_confidence;
- source.innerHTML=`${d.data_source}. <a href="${d.source_url}" target="_blank" style="color:#8dc5ec">Source</a>`;
- modal.classList.add('open');
+
+  const d =
+    dams.find(
+      x => String(x.id) === String(id)
+    );
+
+
+  if(!d)
+    return;
+
+
+  selectedDam = d;
+
+
+  document.getElementById("title")
+    .textContent =
+      d.dam_name;
+
+
+  document.getElementById("location")
+    .textContent =
+      `${d.country} • ${d.river || "River unavailable"}`;
+
+
+  const facts = [
+
+    ["Status", d.status],
+
+    ["Dam type", d.dam_type],
+
+    [
+      "Completed",
+      d.year_completed != null
+        ? d.year_completed
+        : "Not available"
+    ],
+
+    [
+      "Height",
+      d.dam_height_m != null
+        ? `${d.dam_height_m} m`
+        : "Not available"
+    ],
+
+    [
+      "Length",
+      d.dam_length_m != null
+        ? `${d.dam_length_m} m`
+        : "Not available"
+    ],
+
+    [
+      "Reservoir capacity",
+      d.reservoir_capacity_bcm != null
+        ? `${d.reservoir_capacity_bcm} bcm`
+        : "Not available"
+    ],
+
+    [
+      "Hydropower",
+      d.hydropower_capacity_mw != null
+        ? `${d.hydropower_capacity_mw} MW`
+        : "Not available"
+    ],
+
+    [
+      "Dam age",
+      d.dam_age_years != null
+        ? `${d.dam_age_years} years`
+        : "Not available"
+    ]
+
+  ];
+
+
+  document.getElementById("facts")
+    .innerHTML =
+      facts.map(
+        x => `
+          <div class="card">
+
+            <label>
+              ${escapeHTML(x[0])}
+            </label>
+
+            <div>
+              ${escapeHTML(
+                String(x[1] ?? "Not available")
+              )}
+            </div>
+
+          </div>
+        `
+      ).join("");
+
+
+  renderRisk(d);
+
+
+  renderScenario(d);
+
+
+  const sourceText =
+    d.data_source ||
+    "Source unavailable";
+
+
+  const sourceURL =
+    d.source_url ||
+    "#";
+
+
+  document.getElementById("source")
+    .innerHTML = `
+
+      <strong>
+        Data source:
+      </strong>
+
+      ${escapeHTML(sourceText)}
+
+      <br>
+
+      <strong>
+        Confidence:
+      </strong>
+
+      ${escapeHTML(
+        String(
+          d.data_confidence ||
+          "Not specified"
+        )
+      )}
+
+      <br>
+
+      <a
+        href="${escapeAttribute(sourceURL)}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Open source
+      </a>
+
+    `;
+
+
+  document
+    .getElementById("modal")
+    .classList.add("open");
+
 }
-function closeModal(){modal.classList.remove('open')}
-search.oninput=render;country.onchange=render;init();
+
+
+/* =========================
+   RISK DISPLAY
+========================= */
+
+function renderRisk(d){
+
+  const results = [
+
+    {
+      name:"Hydrological",
+      score:hydrologicalScore(d)
+    },
+
+    {
+      name:"Downstream exposure",
+      score:exposureScore(d)
+    },
+
+    {
+      name:"Seismic",
+      score:seismicScore(d)
+    },
+
+    {
+      name:"Structural",
+      score:structuralScore(d)
+    }
+
+  ];
+
+
+  document.getElementById("riskGrid")
+    .innerHTML =
+      results.map(r => {
+
+        const level =
+          scoreLevel(r.score);
+
+
+        return `
+
+          <div class="risk">
+
+            <div class="risk-title">
+              ${r.name}
+            </div>
+
+            <div class="risk-score">
+
+              ${
+                r.score === null
+                  ? "—"
+                  : r.score
+              }
+
+            </div>
+
+            <div
+              class="risk-level ${level.cls}"
+            >
+              ${level.label}
+            </div>
+
+          </div>
+
+        `;
+
+      }).join("");
+
+
+  const overall =
+    calculateOverall(d);
+
+
+  document.getElementById("overallRisk")
+    .innerHTML = `
+
+      <strong>
+        Overall screening:
+        ${overall}
+      </strong>
+
+      <div class="note">
+
+        This is a prototype screening result
+        derived from available facility attributes.
+        It is not a validated probability of failure
+        and should not be used for emergency decisions.
+
+      </div>
+
+    `;
+
+}
+
+
+/* =========================
+   SCENARIO LAB
+========================= */
+
+function renderScenario(d){
+
+  updateRainfallScenario(d);
+
+  updateReleaseScenario(d);
+
+
+  document.getElementById("failureResult")
+    .innerHTML = `
+
+      <strong>
+        Hypothetical scenario only.
+      </strong>
+
+      <br>
+
+      A hypothetical failure scenario would
+      require validated hydraulic modelling,
+      terrain data, breach parameters,
+      downstream population data and
+      time-dependent flood routing.
+
+      <br><br>
+
+      Current prototype:
+
+      <strong>
+        No failure probability is calculated.
+      </strong>
+
+    `;
+
+}
+
+
+function updateRainfallScenario(d){
+
+  const increase =
+    Number(
+      document.getElementById("rainfall")
+        .value
+    );
+
+
+  document.getElementById("rainfallValue")
+    .textContent =
+      `${increase}%`;
+
+
+  let base =
+    hydrologicalScore(d);
+
+
+  if(base === null){
+
+    document.getElementById("rainfallResult")
+      .innerHTML =
+        "Insufficient reservoir/age data for this screening scenario.";
+
+    return;
+
+  }
+
+
+  const scenarioScore =
+    Math.min(
+      100,
+      Math.round(
+        base *
+        (1 + increase / 200)
+      )
+    );
+
+
+  const level =
+    scoreLevel(
+      scenarioScore
+    );
+
+
+  document.getElementById("rainfallResult")
+    .innerHTML = `
+
+      Baseline hydrological screening:
+      <strong>${base}</strong>
+
+      <br>
+
+      Hypothetical scenario screening:
+      <strong>${scenarioScore}</strong>
+
+      <br>
+
+      Result:
+      <strong>${level.label}</strong>
+
+      <br><br>
+
+      <span class="note">
+
+        This represents a sensitivity-style
+        screening exercise, not a rainfall forecast
+        or hydraulic simulation.
+
+      </span>
+
+    `;
+
+}
+
+
+function updateReleaseScenario(d){
+
+  const increase =
+    Number(
+      document.getElementById("release")
+        .value
+    );
+
+
+  document.getElementById("releaseValue")
+    .textContent =
+      `${increase}%`;
+
+
+  const base =
+    exposureScore(d);
+
+
+  if(base === null){
+
+    document.getElementById("releaseResult")
+      .innerHTML =
+        "Insufficient reservoir data for the current exposure proxy.";
+
+    return;
+
+  }
+
+
+  const scenarioScore =
+    Math.min(
+      100,
+      Math.round(
+        base *
+        (1 + increase / 100)
+      )
+    );
+
+
+  const level =
+    scoreLevel(
+      scenarioScore
+    );
+
+
+  document.getElementById("releaseResult")
+    .innerHTML = `
+
+      Baseline exposure proxy:
+      <strong>${base}</strong>
+
+      <br>
+
+      Hypothetical release scenario:
+      <strong>${scenarioScore}</strong>
+
+      <br>
+
+      Screening level:
+      <strong>${level.label}</strong>
+
+      <br><br>
+
+      <span class="note">
+
+        This is not a hydraulic discharge calculation.
+        It is a conceptual sensitivity indicator.
+
+      </span>
+
+    `;
+
+}
+
+
+/* =========================
+   EVENTS
+========================= */
+
+document
+  .getElementById("search")
+  .addEventListener(
+    "input",
+    render
+  );
+
+
+document
+  .getElementById("country")
+  .addEventListener(
+    "change",
+    render
+  );
+
+
+document
+  .getElementById("rainfall")
+  .addEventListener(
+    "input",
+    () => {
+
+      if(selectedDam)
+        updateRainfallScenario(
+          selectedDam
+        );
+
+    }
+  );
+
+
+document
+  .getElementById("release")
+  .addEventListener(
+    "input",
+    () => {
+
+      if(selectedDam)
+        updateReleaseScenario(
+          selectedDam
+        );
+
+    }
+  );
+
+
+function closeModal(){
+
+  document
+    .getElementById("modal")
+    .classList.remove("open");
+
+}
+
+
+document
+  .getElementById("modal")
+  .addEventListener(
+    "click",
+    function(e){
+
+      if(e.target === this)
+        closeModal();
+
+    }
+);
+
+
+/* =========================
+   SECURITY HELPERS
+========================= */
+
+function escapeHTML(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+function escapeAttribute(value){
+
+  return String(value ?? "")
+    .replace(/"/g,"%22")
+    .replace(/'/g,"%27");
+
+}
+
+
+/* START */
+
+init();
+
 </script>
-</body></html>
+
+</body>
+</html>
