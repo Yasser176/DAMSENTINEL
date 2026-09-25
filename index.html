@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DAMSENTINEL — Asia + Egypt Dam Risk Intelligence</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial;background:#07111d;color:#eaf2f8}
+header{height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:#0b1725;border-bottom:1px solid #203246}
+.brand{font-weight:800;letter-spacing:1.5px;font-size:21px}.sub{font-size:11px;color:#8fa7bb;margin-top:3px}
+.badge{padding:8px 12px;border:1px solid #2c4962;border-radius:999px;color:#a9c9df;font-size:12px}
+main{display:grid;grid-template-columns:390px 1fr;height:calc(100vh - 72px)}
+aside{padding:20px;border-right:1px solid #203246;background:#091522;overflow:auto}
+h2{font-size:17px;margin:0 0 14px}.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.stat{background:#0e1d2c;border:1px solid #203246;border-radius:12px;padding:12px}.stat b{font-size:21px}.stat span{display:block;color:#8fa7bb;font-size:11px;margin-top:3px}
+input,select{width:100%;background:#0d1b29;border:1px solid #29445b;color:#eaf2f8;border-radius:9px;padding:11px;margin-bottom:9px}
+.list{display:grid;gap:7px}.item{padding:11px;border:1px solid #203246;border-radius:10px;background:#0c1a28;cursor:pointer}.item:hover{border-color:#5b8fb2}.item strong{font-size:13px}.item small{display:block;color:#91a8bb;margin-top:3px}
+#map{height:100%;min-height:500px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#0d1b29;color:#eaf2f8}.leaflet-popup-content{margin:13px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.62);display:none;align-items:center;justify-content:center;padding:20px;z-index:1000}.modal.open{display:flex}
+.panel{width:min(900px,96vw);max-height:90vh;overflow:auto;background:#0b1826;border:1px solid #2a455c;border-radius:16px;padding:22px;box-shadow:0 20px 60px #000}
+.panelhead{display:flex;justify-content:space-between;gap:15px}.close{cursor:pointer;font-size:24px;color:#9db2c3}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}.card{background:#0e1d2c;border:1px solid #203246;border-radius:11px;padding:13px}.card label{font-size:10px;color:#8fa7bb;text-transform:uppercase}.card div{margin-top:5px;font-weight:700}
+.section{border-top:1px solid #203246;padding-top:16px;margin-top:16px}.note{font-size:12px;line-height:1.6;color:#9db1c0}
+@media(max-width:800px){main{grid-template-columns:1fr;height:auto}aside{border-right:0;border-bottom:1px solid #203246}#map{height:55vh}.grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header><div><div class="brand">DAMSENTINEL</div><div class="sub">Asia + Egypt Dam Risk & Flood Emergency Decision-Support Platform</div></div><div class="badge">V5 • REAL-DATA CURATED DEMO</div></header>
+<main>
+<aside>
+<h2>Dam Intelligence</h2>
+<div class="statgrid"><div class="stat"><b id="count">30</b><span>Tracked facilities</span></div><div class="stat"><b id="countries">9</b><span>Countries</span></div></div>
+<input id="search" placeholder="Search dam, river or country…">
+<select id="country"><option value="">All countries</option></select>
+<div class="list" id="list"></div>
+</aside>
+<div id="map"></div>
+</main>
+<div class="modal" id="modal"><div class="panel">
+<div class="panelhead"><div><h2 id="title"></h2><div id="location" class="sub"></div></div><div class="close" onclick="closeModal()">×</div></div>
+<div class="grid" id="facts"></div>
+<div class="section"><h2>Risk Screening</h2><div class="grid">
+<div class="card"><label>Hydrological</label><div>Screening only</div></div>
+<div class="card"><label>Downstream exposure</label><div>Not calculated</div></div>
+<div class="card"><label>Seismic</label><div>Not calculated</div></div>
+<div class="card"><label>Data confidence</label><div id="confidence"></div></div>
+</div></div>
+<div class="section"><h2>Scenario Lab</h2><p class="note">Explore hypothetical extreme-rainfall, emergency-release and dam-failure scenarios in future versions. These are not forecasts or official emergency warnings.</p></div>
+<div class="section"><h2>Data provenance</h2><p class="note" id="source"></p></div>
+</div></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+let dams=[],map,markers=[];
+async function init(){
+ dams=await fetch('data/dams.json').then(r=>r.json());
+ map=L.map('map').setView([27,92],4);
+ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);
+ const countries=[...new Set(dams.map(d=>d.country))].sort(); country.innerHTML='<option value="">All countries</option>'+countries.map(c=>`<option>${c}</option>`).join('');
+ render();
+}
+function render(){
+ markers.forEach(m=>map.removeLayer(m));markers=[];
+ const q=search.value.toLowerCase(), c=country.value;
+ const rows=dams.filter(d=>(!q||[d.dam_name,d.country,d.river].join(' ').toLowerCase().includes(q))&&(!c||d.country===c));
+ list.innerHTML=rows.map(d=>`<div class="item" onclick="openDam('${d.id}')"><strong>${d.dam_name}</strong><small>${d.country} • ${d.river}</small></div>`).join('');
+ rows.forEach(d=>{
+  const m=L.circleMarker([d.latitude,d.longitude],{radius:7,weight:2,fillOpacity:.8}).addTo(map);
+  m.bindTooltip(d.dam_name);m.on('click',()=>openDam(d.id));markers.push(m);
+ });
+}
+function openDam(id){
+ const d=dams.find(x=>x.id===id); if(!d)return;
+ title.textContent=d.dam_name;location.textContent=`${d.country} • ${d.river}`;
+ const f=[['Status',d.status],['Dam type',d.dam_type],['Completed',d.year_completed??'Not available'],['Height',d.dam_height_m?d.dam_height_m+' m':'Not available'],['Length',d.dam_length_m?d.dam_length_m+' m':'Not available'],['Reservoir capacity',d.reservoir_capacity_bcm?d.reservoir_capacity_bcm+' bcm':'Not available'],['Hydropower',d.hydropower_capacity_mw?d.hydropower_capacity_mw+' MW':'Not available'],['Dam age',d.dam_age_years?d.dam_age_years+' years':'Not available']];
+ facts.innerHTML=f.map(x=>`<div class="card"><label>${x[0]}</label><div>${x[1]}</div></div>`).join('');
+ confidence.textContent=d.data_confidence;
+ source.innerHTML=`${d.data_source}. <a href="${d.source_url}" target="_blank" style="color:#8dc5ec">Source</a>`;
+ modal.classList.add('open');
+}
+function closeModal(){modal.classList.remove('open')}
+search.oninput=render;country.onchange=render;init();
+</script>
+</body></html>
